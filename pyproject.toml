@@ -1,0 +1,40 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "textllm"
+version = "0.1.0"
+description = "Train a language model from scratch in pure PyTorch — tokenizer, pretraining, SFT, and alignment, on your own machine."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "y0oshi" }]
+dependencies = [
+    "torch>=2.1",
+    "numpy",
+    "tqdm",
+]
+
+[project.optional-dependencies]
+# A ready-made tokenizer if you don't want to train your own BPE.
+tiktoken = ["tiktoken"]
+# Test and lint tooling.
+dev = ["pytest", "ruff"]
+
+[project.scripts]
+llm = "textllm.cli:main"
+
+[tool.setuptools]
+packages = [
+    "textllm",
+    "textllm.tokenizer",
+    "textllm.model",
+    "textllm.data",
+    "textllm.train",
+    "textllm.infer",
+    "textllm.eval",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

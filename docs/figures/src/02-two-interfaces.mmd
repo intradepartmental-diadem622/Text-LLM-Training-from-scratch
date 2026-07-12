@@ -1,0 +1,13 @@
+flowchart LR
+    subgraph TUI["interactive menu — run: llm"]
+        direction LR
+        T1["arrow-key menus<br/>enter · esc"] --> T2["guided prompts with<br/>validated defaults"]
+        T2 --> T3["prints the exact<br/>command it built"]
+    end
+    subgraph CLI["direct commands — run: llm stage"]
+        direction LR
+        C1["tokenizer · data<br/>pretrain"] --> C2["sft · reward<br/>dpo · grpo"]
+        C2 --> C3["generate · chat<br/>serve · eval"]
+    end
+    T3 -->|"executes"| LIB["one shared code path<br/>the textllm library"]
+    C3 -->|"executes"| LIB

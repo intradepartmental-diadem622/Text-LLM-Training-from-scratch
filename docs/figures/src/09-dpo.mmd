@@ -1,0 +1,10 @@
+flowchart LR
+    subgraph pol["policy (training)"]
+        P["log P of chosen<br/>and rejected"]
+    end
+    subgraph ref["reference (frozen copy)"]
+        R["log P of chosen<br/>and rejected"]
+    end
+    P --> M["margin = gain on chosen<br/>minus gain on rejected,<br/>each relative to reference"]
+    R --> M
+    M --> L["loss =<br/>−log σ(β · margin)"]

@@ -1,0 +1,2 @@
+{"prompt": [{"role": "user", "content": "Give me a greeting."}], "chosen": "Hello! How can I help you today?", "rejected": "no."}
+{"prompt": [{"role": "user", "content": "Explain the sky is blue."}], "chosen": "Sunlight scatters off air molecules, and blue scatters most, so the sky looks blue.", "rejected": "because it is."}

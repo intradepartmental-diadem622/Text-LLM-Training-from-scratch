@@ -1,0 +1,6 @@
+flowchart LR
+    A["prompt"] -->|"sample G<br/>completions"| B["c1 … cG"]
+    B --> C["program reward<br/>r(prompt, c)"]
+    C --> D["group-normalized advantage<br/>(r − group mean) / group std"]
+    D --> E["policy<br/>update"]
+    F["frozen<br/>reference"] -->|"KL<br/>penalty"| E

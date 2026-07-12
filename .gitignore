@@ -1,0 +1,19 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.pytest_cache/
+.DS_Store
+site/
+
+# training artifacts (root-anchored so textllm/data/ the package is NOT ignored)
+/data/
+/checkpoints/
+/tok.json
+*_ckpt/
+*.bin
+*.pt
+*.log
+wandb/

@@ -1,0 +1,8 @@
+flowchart LR
+    A["corpus.txt"] -->|"--doc-sep"| B["documents<br/>doc 1 … doc N"]
+    B -->|"split at document<br/>boundaries"| C["train docs"]
+    B --> D["val docs"]
+    C -->|"encode each doc +<br/>full separator ids"| E["train.bin<br/>uint16 · memory-mapped"]
+    D --> F["val.bin"]
+    E --> G["random window sampler<br/>(with replacement — no<br/>giant permutation)"]
+    G --> H["x = tokens 0 … T-1<br/>y = tokens 1 … T"]

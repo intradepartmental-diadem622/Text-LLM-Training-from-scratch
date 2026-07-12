@@ -1,0 +1,14 @@
+flowchart LR
+    A["token ids<br/>(B × T)"] --> B["token embedding<br/>(tied with head)"]
+    B --> BL
+    subgraph BL["repeated × N blocks"]
+        direction LR
+        C["RMSNorm"] --> D["GQA attention<br/>RoPE · KV-cache"]
+        D --> E(("+"))
+        E --> F["RMSNorm"]
+        F --> G["SwiGLU<br/>MLP"]
+        G --> H(("+"))
+    end
+    BL --> I["final<br/>RMSNorm"]
+    I --> J["LM head<br/>(tied weights)"]
+    J --> K["logits over<br/>the vocabulary"]

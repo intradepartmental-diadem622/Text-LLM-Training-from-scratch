@@ -1,0 +1,20 @@
+flowchart LR
+    subgraph DATA["1 · Data"]
+        A["raw text"] --> B["BPE tokenizer<br/>(trained on your text)"]
+        B --> C["token shards<br/>(memory-mapped .bin)"]
+    end
+    subgraph TRAIN["2 · Pretraining"]
+        C --> D["Transformer<br/>next-token prediction"]
+        D --> E[("base model<br/>checkpoint")]
+    end
+    subgraph ALIGN["3 · Alignment"]
+        E --> F["SFT<br/>chat format"]
+        F --> G["Reward model"]
+        F --> H["DPO"]
+        F --> I["GRPO / RLVR"]
+    end
+    subgraph USE["4 · Use"]
+        G --> J["generate · chat<br/>serve · eval"]
+        H --> J
+        I --> J
+    end

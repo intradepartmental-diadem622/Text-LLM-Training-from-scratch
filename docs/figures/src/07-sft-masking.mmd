@@ -1,0 +1,7 @@
+flowchart LR
+    subgraph seq["one training sequence"]
+        direction LR
+        A["begin + user turn:<br/>'What is 2+2?'"] --- B["assistant turn:<br/>'It is 4.' + end"]
+    end
+    A -->|"masked (-100)<br/>no loss"| L["cross-entropy<br/>loss"]
+    B -->|"supervised<br/>loss active"| L

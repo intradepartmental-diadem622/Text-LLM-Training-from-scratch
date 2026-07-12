@@ -1,0 +1,7 @@
+flowchart LR
+    A["prompt<br/>(T tokens)"] -->|"prefill: one<br/>forward pass"| B["KV-cache<br/>keys and values<br/>for every position"]
+    B --> C["decode: single-token<br/>forward pass"]
+    C -->|"append<br/>new K,V"| B
+    C --> D["sample next token<br/>temp · top-k · top-p"]
+    D -->|"feed<br/>back"| C
+    D --> E["stop at EOT or<br/>max_new_tokens"]

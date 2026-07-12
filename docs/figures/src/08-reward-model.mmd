@@ -1,0 +1,5 @@
+flowchart LR
+    A["prompt +<br/>chosen reply"] --> BB["shared transformer<br/>backbone"]
+    B["prompt +<br/>rejected reply"] --> BB
+    BB --> H["scalar head reads<br/>the last real token"]
+    H --> L["loss =<br/>−log σ(r_chosen − r_rejected)"]

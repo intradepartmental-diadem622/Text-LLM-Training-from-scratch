@@ -1,0 +1,6 @@
+flowchart LR
+    A["text<br/>'the cat'"] --> B["UTF-8 bytes<br/>116 104 101 …"]
+    B --> C{"count adjacent<br/>pairs"}
+    C --> D["merge the most frequent<br/>pair into a new token"]
+    D -->|"repeat until<br/>vocab_size"| C
+    D --> E["merges table<br/>= the tokenizer"]
