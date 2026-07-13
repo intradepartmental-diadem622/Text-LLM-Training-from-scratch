@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="docs/figures/banner.png" alt="Text-LLM-Training-from-scratch banner" />
+</p>
+
 # Text-LLM-Training-from-scratch
 
 A from-scratch implementation of the language-model training pipeline in PyTorch, covering
@@ -13,6 +17,30 @@ selection is centralized in a single module, so the same code runs on CPU, Apple
 (MPS), and CUDA GPUs without modification.
 
 Author: [y0oshi](https://github.com/Y0oshi). License: MIT.
+
+## Table of contents
+
+- [System overview](#system-overview)
+- [Requirements](#requirements)
+- [Installation](#installation)
+- [Quickstart](#quickstart)
+- [Two interfaces](#two-interfaces)
+- [Example: a 17M-parameter model](#example-a-17m-parameter-model)
+- [How each stage works](#how-each-stage-works)
+  - [Tokenizer: byte-level BPE](#tokenizer-byte-level-bpe)
+  - [Data pipeline: memory-mapped token shards](#data-pipeline-memory-mapped-token-shards)
+  - [Model: a decoder-only Transformer](#model-a-decoder-only-transformer)
+  - [Generation: the key/value cache](#generation-the-keyvalue-cache)
+- [Alignment](#alignment)
+  - [Supervised fine-tuning with prompt masking](#supervised-fine-tuning-with-prompt-masking)
+  - [Reward model](#reward-model)
+  - [Direct Preference Optimization](#direct-preference-optimization)
+  - [GRPO with verifiable rewards](#grpo-with-verifiable-rewards)
+- [Serving and evaluation](#serving-and-evaluation)
+- [Hardware and scaling](#hardware-and-scaling)
+- [Repository layout](#repository-layout)
+- [Tests](#tests)
+- [License](#license)
 
 ## System overview
 
