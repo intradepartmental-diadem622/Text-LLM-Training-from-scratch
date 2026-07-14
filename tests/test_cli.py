@@ -89,3 +89,15 @@ def test_pretrain_rejects_token_file_too_short_for_a_window(tmp_path, monkeypatc
 
     with pytest.raises(ValueError, match="context_length"):
         main(["pretrain", *TINY_OVERRIDES, "--set", "train.data_dir=data", "--set", "train.out_dir=ckpt"])
+
+
+def test_pretrain_rejects_token_ids_beyond_model_vocab(tmp_path, monkeypatch):
+    import numpy as np
+    import pytest
+
+    monkeypatch.chdir(tmp_path)
+    (tmp_path / "data").mkdir()
+    np.full(200, 600, dtype=np.uint16).tofile(tmp_path / "data" / "train.bin")  # vocab is 512
+
+    with pytest.raises(ValueError, match="vocab_size"):
+        main(["pretrain", *TINY_OVERRIDES, "--set", "train.data_dir=data", "--set", "train.out_dir=ckpt"])

@@ -50,6 +50,9 @@ class Tokenizer:
     def train(self, text: str, vocab_size: int, verbose: bool = False) -> None:
         if vocab_size < 256:
             raise ValueError("vocab_size must be at least 256 (the byte alphabet)")
+        if self.special:
+            # merge ids are assigned from 256 upward and would collide with them
+            raise ValueError("add special tokens after training, not before")
         n_merges = vocab_size - 256
 
         # Count how often each pre-split chunk appears, then only ever work on the unique
@@ -78,18 +81,32 @@ class Tokenizer:
     def add_special(self, tokens: list[str]) -> None:
         """Register special tokens (chat markers, end-of-text) above the learned vocab."""
         next_id = max(self.vocab) + 1 if self.vocab else 256
+        if self.special:
+            # existing specials live above the vocab too; never hand out their ids again
+            next_id = max(next_id, max(self.special.values()) + 1)
         for tok in tokens:
             if tok in self.special:
                 continue
             self.special[tok] = next_id
             next_id += 1
+        self._compile_special_pattern()
+
+    def _compile_special_pattern(self) -> None:
         if self.special:
-            joined = "|".join(re.escape(t) for t in self.special)
+            # longest first, so one special token can't shadow a longer one in the regex
+            joined = "|".join(re.escape(t) for t in sorted(self.special, key=len, reverse=True))
             self._special_re = re.compile(f"({joined})")
 
     @property
     def vocab_size(self) -> int:
         return len(self.vocab) + len(self.special)
+
+    @property
+    def max_token_id(self) -> int:
+        top = max(self.vocab)
+        if self.special:
+            top = max(top, max(self.special.values()))
+        return top
 
     # -- encode / decode ----------------------------------------------------------
 
@@ -154,7 +171,15 @@ class Tokenizer:
             a, b = (int(x) for x in key.split(","))
             tok.merges[(a, b)] = new_id
             tok.vocab[new_id] = tok.vocab[a] + tok.vocab[b]
-        tok.add_special(list(data.get("special", {})))
+        # a trained model depends on these exact ids, so restore them verbatim
+        tok.special = {t: int(i) for t, i in data.get("special", {}).items()}
+        ids = list(tok.special.values())
+        if len(set(ids)) != len(ids) or any(i < 0 for i in ids) or set(ids) & set(tok.vocab):
+            raise ValueError(
+                f"invalid special token ids in {path}: they must be unique, non-negative, "
+                f"and outside the merge vocabulary"
+            )
+        tok._compile_special_pattern()
         return tok
 
     # -- alternative: reuse a tiktoken encoding -----------------------------------
@@ -177,12 +202,17 @@ class TiktokenTokenizer:
     def vocab_size(self) -> int:
         return self._enc.n_vocab
 
+    @property
+    def max_token_id(self) -> int:
+        return self._enc.n_vocab - 1
+
     def encode_ordinary(self, text: str) -> list[int]:
         return self._enc.encode_ordinary(text)
 
     def encode(self, text: str, allowed_special: bool = True) -> list[int]:
-        special = "all" if allowed_special else set()
-        return self._enc.encode(text, allowed_special=special)
+        if not allowed_special:
+            return self._enc.encode_ordinary(text)  # special strings become plain text
+        return self._enc.encode(text, allowed_special="all")
 
     def decode(self, ids: list[int]) -> str:
         return self._enc.decode(ids)

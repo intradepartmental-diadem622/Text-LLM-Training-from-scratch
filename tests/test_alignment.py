@@ -28,7 +28,10 @@ def test_sft_with_no_trainable_examples_raises_clearly(tmp_path):
     tok.add_special(SPECIAL_TOKENS)
     tok.save(tmp_path / "tok.json")
 
-    cfg = Config(_model_cfg(), TrainConfig(device="cpu"))
+    from textllm.config import ModelConfig
+
+    model_cfg = ModelConfig(vocab_size=512, context_length=32, n_embed=64, n_head=4, n_kv_head=2, n_blocks=2)
+    cfg = Config(model_cfg, TrainConfig(device="cpu"))
     save_checkpoint(tmp_path / "base.pt", Transformer(cfg.model), None, 0, cfg)
 
     # user-only conversations: prompt masking leaves nothing to supervise

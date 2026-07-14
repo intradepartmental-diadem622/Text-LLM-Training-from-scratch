@@ -16,7 +16,7 @@ from typing import Any
 
 @dataclass
 class ModelConfig:
-    vocab_size: int = 8192
+    vocab_size: int = 8256  # headroom above a vocab-8192 tokenizer plus its special ids
     context_length: int = 512
     n_embed: int = 384
     n_head: int = 6

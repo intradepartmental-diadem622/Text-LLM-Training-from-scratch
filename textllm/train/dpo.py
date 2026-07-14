@@ -20,7 +20,7 @@ from textllm.config import Config, ModelConfig
 from textllm.data import PreferenceDataset, collate_preference
 from textllm.device import describe, pick_device
 from textllm.model import Transformer
-from textllm.tokenizer import get_tokenizer
+from textllm.tokenizer import check_vocab_fit, get_tokenizer, special_id
 from textllm.train.loop import build_optimizer, infinite, load_checkpoint, model_state, train
 from textllm.train.reward import load_preferences
 
@@ -67,7 +67,8 @@ def run_dpo(cfg: Config, base_ckpt: str, tokenizer_spec: str, pref_path: str, be
         p.requires_grad_(False)
 
     tokenizer = get_tokenizer(tokenizer_spec)
-    pad_id = tokenizer.encode(PAD)[0]
+    check_vocab_fit(tokenizer, model_cfg.vocab_size)
+    pad_id = special_id(tokenizer, PAD)
     dataset = PreferenceDataset(load_preferences(pref_path), tokenizer, model_cfg.context_length)
     if len(dataset) == 0:
         raise ValueError(f"no preference pairs in {pref_path}")

@@ -22,7 +22,8 @@ def accuracy(ckpt_path: str, tokenizer_spec: str, qa_path: str, max_new_tokens: 
     device = pick_device()
     model, cfg = load_model(ckpt_path, device)
     tokenizer = get_tokenizer(tokenizer_spec)
-    stops = set(tokenizer.encode(EOT))
+    eot_ids = tokenizer.encode(EOT)
+    stops = set(eot_ids) if len(eot_ids) == 1 else set()
 
     rows = [json.loads(line) for line in Path(qa_path).read_text().splitlines() if line.strip()]
     correct = 0

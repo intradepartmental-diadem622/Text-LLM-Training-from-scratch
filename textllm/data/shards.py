@@ -21,12 +21,16 @@ def build_bin(tokenizer, texts: Iterable[str], out_path: str | Path, eot: str | 
     Returns the number of tokens written. Documents are flushed as they're encoded so a
     large corpus never has to sit in memory all at once.
     """
-    max_id = np.iinfo(DTYPE).max
-    vocab_size = getattr(tokenizer, "vocab_size", None)
-    if vocab_size is not None and vocab_size > max_id + 1:
+    limit = np.iinfo(DTYPE).max
+    # vocab_size counts entries; special ids can sit far above it, so bound the id range
+    top = getattr(tokenizer, "max_token_id", None)
+    if top is None:
+        vocab_size = getattr(tokenizer, "vocab_size", None)
+        top = vocab_size - 1 if vocab_size else None
+    if top is not None and top > limit:
         raise ValueError(
-            f"tokenizer vocab ({vocab_size}) exceeds what {np.dtype(DTYPE).name} can store "
-            f"({max_id + 1} ids) — token ids would silently overflow"
+            f"tokenizer ids reach {top}, beyond what {np.dtype(DTYPE).name} can store "
+            f"({limit}) — token ids would silently overflow"
         )
 
     out_path = Path(out_path)

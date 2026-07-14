@@ -1,6 +1,6 @@
 {
   "model": {
-    "vocab_size": 8192,
+    "vocab_size": 8256,
     "context_length": 512,
     "n_embed": 768,
     "n_head": 12,

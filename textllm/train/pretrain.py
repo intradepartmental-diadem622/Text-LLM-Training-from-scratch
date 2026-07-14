@@ -45,6 +45,12 @@ def run_pretrain(cfg: Config, resume: str | None = None) -> None:
             f"form one window of context_length + 1 = {block + 1}; add more data or lower "
             f"model.context_length"
         )
+    peak = int(train_set.data.max())
+    if peak >= cfg.model.vocab_size:
+        raise ValueError(
+            f"train.bin contains token id {peak} but model.vocab_size is "
+            f"{cfg.model.vocab_size}; the embedding cannot index it"
+        )
     train_loader = DataLoader(
         train_set,
         batch_size=min(cfg.train.batch_size, len(train_set)),

@@ -14,7 +14,7 @@ from textllm.config import Config, ModelConfig
 from textllm.data import SFTDataset, collate_lm
 from textllm.device import describe, pick_device
 from textllm.model import Transformer
-from textllm.tokenizer import get_tokenizer
+from textllm.tokenizer import check_vocab_fit, get_tokenizer, special_id
 from textllm.train.loop import build_optimizer, infinite, load_checkpoint, model_state, train
 
 
@@ -43,7 +43,8 @@ def run_sft(cfg: Config, base_ckpt: str, tokenizer_spec: str, sft_path: str) -> 
     print(f"loaded base model from {base_ckpt}")
 
     tokenizer = get_tokenizer(tokenizer_spec)
-    pad_id = tokenizer.encode(PAD)[0]
+    check_vocab_fit(tokenizer, model_cfg.vocab_size)
+    pad_id = special_id(tokenizer, PAD)
     conversations = load_conversations(sft_path)
     dataset = SFTDataset(conversations, tokenizer, model_cfg.context_length)
     if len(dataset) == 0:

@@ -12,13 +12,9 @@ from textllm.tokenizer import get_tokenizer
 
 
 def _stop_ids(tokenizer) -> set[int]:
-    stops = set()
-    for marker in (EOT,):
-        try:
-            stops.update(tokenizer.encode(marker))
-        except Exception:
-            pass
-    return stops
+    # a multi-token EOT would stop generation on ordinary text, so require a single id
+    ids = tokenizer.encode(EOT)
+    return set(ids) if len(ids) == 1 else set()
 
 
 def chat_repl(ckpt_path: str, tokenizer_spec: str, system: str | None = None, **sampling) -> None:

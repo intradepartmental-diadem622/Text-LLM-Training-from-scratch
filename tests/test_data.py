@@ -116,3 +116,19 @@ def test_preference_pair_dropped_when_prompt_fills_context():
     long_prompt = [Message("user", "hello world how are you doing today friend " * 30)]
     ds = PreferenceDataset([(long_prompt, "fine", "bad")], tok, block_size=16)
     assert len(ds) == 0  # truncation left no supervised response tokens on either side
+
+
+def test_build_bin_bounds_the_id_range_not_the_count(tmp_path):
+    import pytest
+
+    from textllm.data import build_bin
+
+    class SparseIds:
+        vocab_size = 300          # small count
+        max_token_id = 70_000     # but an id beyond uint16
+
+        def encode(self, text):
+            return [0]
+
+    with pytest.raises(ValueError, match="overflow"):
+        build_bin(SparseIds(), ["hello"], tmp_path / "t.bin")

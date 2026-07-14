@@ -18,7 +18,7 @@ from textllm.config import Config, ModelConfig
 from textllm.device import describe, pick_device
 from textllm.infer.generate import generate
 from textllm.model import Transformer
-from textllm.tokenizer import get_tokenizer
+from textllm.tokenizer import check_vocab_fit, get_tokenizer
 from textllm.train.loop import build_optimizer, load_checkpoint, model_state, save_checkpoint
 from textllm.train.rewards import RewardFn
 
@@ -58,6 +58,7 @@ def run_grpo(
         p.requires_grad_(False)
 
     tokenizer = get_tokenizer(tokenizer_spec)
+    check_vocab_fit(tokenizer, model_cfg.vocab_size)
     pad_id = tokenizer.encode(" ")[0]  # any real token id; padded positions are masked out
     optimizer = build_optimizer(policy, cfg.train)
 
